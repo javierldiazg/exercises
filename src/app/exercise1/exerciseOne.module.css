@@ -5,27 +5,14 @@
   grid-row-start: 2;
 }
 
-.main ul {
-  padding-left: 0;
-  margin: 0;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: -0.01em;
-  list-style-position: inside;
-}
-
-.main li:not(:last-of-type) {
-  margin-bottom: 8px;
-}
-
 .page {
   display: grid;
   grid-template-rows: 20px 1fr 20px;
   align-items: center;
   justify-items: center;
   min-height: 100svh;
-  padding: 80px;
   gap: 64px;
+  margin-top: 1rem;
 }
 
 .footer {
@@ -42,10 +29,6 @@
 
   .main {
     align-items: center;
-  }
-
-  .main ul {
-    text-align: center;
   }
 
   .footer {

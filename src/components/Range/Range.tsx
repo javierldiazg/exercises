@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import styles from "./Range.module.css";
-import { RangeProps } from "./types";
+import { Euro } from "lucide-react";
 import { useRange } from "@/hooks/useRange";
+import { RangeProps } from "./types";
+import styles from "./Range.module.css";
 
 export function Range({ min, max, fixedValues, onChange }: RangeProps) {
   const { minValue, maxValue, onDragStart, rangeRef } = useRange(
@@ -18,20 +19,35 @@ export function Range({ min, max, fixedValues, onChange }: RangeProps) {
 
   return (
     <div className={styles.rangeContainer}>
-      <span className={styles.label}>{minValue}</span>
+      <span className={styles.label}>
+        {minValue.toFixed(2)} <Euro size={16} />
+      </span>
       <div ref={rangeRef} className={styles.rangeTrack}>
+        {fixedValues &&
+          fixedValues.map((value, index) => (
+            <span
+              key={index}
+              className={styles.tick}
+              style={{ left: `${((value - min) / (max - min)) * 100}%` }}
+            >
+              |
+            </span>
+          ))}
+
         <div
           className={styles.handle}
-          style={{ left: `${(minValue / max) * 100}%` }}
+          style={{ left: `${((minValue - min) / (max - min)) * 100}%` }}
           onMouseDown={(e) => onDragStart(e, "min")}
         />
         <div
           className={styles.handle}
-          style={{ left: `${(maxValue / max) * 100}%` }}
+          style={{ left: `${((maxValue - min) / (max - min)) * 100}%` }}
           onMouseDown={(e) => onDragStart(e, "max")}
         />
       </div>
-      <span className={styles.label}>{maxValue}</span>
+      <span className={styles.label}>
+        {maxValue.toFixed(2)} <Euro size={16} />
+      </span>
     </div>
   );
 }
