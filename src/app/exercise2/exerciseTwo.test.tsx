@@ -14,7 +14,15 @@ jest.mock("../../components/Header/Header", () => ({
 
 jest.mock("../../components/Range/Range", () => ({
   __esModule: true,
-  Range: ({ min, max, fixedValues, onChange }: any) => (
+  Range: ({
+    min,
+    max,
+    fixedValues,
+  }: {
+    min: number;
+    max: number;
+    fixedValues?: number[];
+  }) => (
     <div data-testid="mock-range">
       <span data-testid="min-value">{min}</span>
       <span data-testid="max-value">{max}</span>
