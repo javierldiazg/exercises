@@ -33,5 +33,12 @@ export function useRange(min: number, max: number, fixedValues?: number[]) {
     document.addEventListener("mouseup", onMouseUp);
   };
 
-  return { minValue, maxValue, onDragStart, rangeRef };
+  return {
+    minValue,
+    maxValue,
+    onDragStart,
+    rangeRef,
+    setMinValue,
+    setMaxValue,
+  };
 }

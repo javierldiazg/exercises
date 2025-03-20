@@ -6,12 +6,12 @@ describe("Constants - PAGES", () => {
       {
         title: "Exercise One",
         href: "/exercise1",
-        description: "Create a range component with min and max values.",
+        description: "Range component with min and max values (0 to 100).",
       },
       {
         title: "Exercise Two",
         href: "/exercise2",
-        description: "Create a range component with fixed values.",
+        description: "Range component with fixed values.",
       },
     ]);
   });
