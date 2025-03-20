@@ -23,9 +23,7 @@ export default function ExerciseOne() {
           min={data.min}
           max={data.max}
           fixedValues={[]}
-          onChange={(values: { minValue: number; maxValue: number }) =>
-            console.log(values)
-          }
+          onChange={() => {}}
         />
       </main>
       <footer className={styles.footer}></footer>

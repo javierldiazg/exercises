@@ -23,7 +23,7 @@ export default function ExerciseTwo() {
           min={data.rangeValues[0]}
           max={data.rangeValues[data.rangeValues.length - 1]}
           fixedValues={data.rangeValues}
-          onChange={(values) => console.log(values)}
+          onChange={() => {}}
         />
       </main>
       <footer className={styles.footer}></footer>

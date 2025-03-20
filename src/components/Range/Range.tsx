@@ -36,11 +36,19 @@ export function Range({ min, max, fixedValues, onChange }: RangeProps) {
 
         <div
           className={styles.handle}
+          role="slider"
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={minValue}
           style={{ left: `${((minValue - min) / (max - min)) * 100}%` }}
           onMouseDown={(e) => onDragStart(e, "min")}
         />
         <div
           className={styles.handle}
+          role="slider"
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={maxValue}
           style={{ left: `${((maxValue - min) / (max - min)) * 100}%` }}
           onMouseDown={(e) => onDragStart(e, "max")}
         />
