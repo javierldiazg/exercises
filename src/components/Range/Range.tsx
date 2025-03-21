@@ -1,61 +1,119 @@
 "use client";
 
 import { useEffect } from "react";
-import { Euro } from "lucide-react";
 import { useRange } from "@/hooks/useRange";
-import { RangeProps } from "./types";
+import { useRangeInputs } from "@/hooks/useRangeInputs";
+import { RangeProps } from "@/utils/types";
+import { RangeInput } from "./RangeInput";
+import { RangeLabel } from "./RangeLabel";
+import { RangeTrack } from "./RangeTrack";
 import styles from "./Range.module.css";
 
-export function Range({ min, max, fixedValues, onChange }: RangeProps) {
-  const { minValue, maxValue, onDragStart, rangeRef } = useRange(
+export function Range({
+  min,
+  max,
+  fixedValues,
+  onChange,
+  enableInputs = false,
+}: RangeProps) {
+  const {
+    minValue,
+    maxValue,
+    onDragStart,
+    rangeRef,
+    setMinValue,
+    setMaxValue,
+  } = useRange(min, max, fixedValues);
+
+  const {
+    showMinInput,
+    setShowMinInput,
+    showMaxInput,
+    setShowMaxInput,
+    minInputValue,
+    maxInputValue,
+    isDragging,
+    setIsDragging,
+    handleMinInputChange,
+    handleMaxInputChange,
+    handleInputBlur,
+    handleKeyPress,
+  } = useRangeInputs({
     min,
     max,
-    fixedValues
-  );
+    minValue,
+    maxValue,
+    rangeRef,
+    fixedValues,
+    setMinValue,
+    setMaxValue,
+  });
 
   useEffect(() => {
     onChange({ minValue, maxValue });
   }, [minValue, maxValue, onChange]);
 
+  const handleDragStart = (e: React.MouseEvent, type: "min" | "max") => {
+    setIsDragging(true);
+    setShowMinInput(false);
+    setShowMaxInput(false);
+
+    const onMouseUp = () => {
+      setIsDragging(false);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
+
+    document.addEventListener("mouseup", onMouseUp);
+    onDragStart(e, type);
+  };
+
   return (
     <div className={styles.rangeContainer}>
-      <span className={styles.label}>
-        {minValue.toFixed(2)} <Euro size={16} />
-      </span>
-      <div ref={rangeRef} className={styles.rangeTrack}>
-        {fixedValues &&
-          fixedValues.map((value, index) => (
-            <span
-              key={index}
-              className={styles.tick}
-              style={{ left: `${((value - min) / (max - min)) * 100}%` }}
-            >
-              |
-            </span>
-          ))}
+      {enableInputs && showMinInput && !isDragging ? (
+        <RangeInput
+          value={minInputValue}
+          onChange={handleMinInputChange}
+          onBlur={() => handleInputBlur("min")}
+          onKeyPress={(e) => handleKeyPress(e, "min")}
+          min={min}
+          max={maxValue - 1}
+          autoFocus
+        />
+      ) : (
+        <RangeLabel
+          value={minValue}
+          onClick={() => enableInputs && !isDragging && setShowMinInput(true)}
+          clickable={enableInputs}
+        />
+      )}
 
-        <div
-          className={styles.handle}
-          role="slider"
-          aria-valuemin={min}
-          aria-valuemax={max}
-          aria-valuenow={minValue}
-          style={{ left: `${((minValue - min) / (max - min)) * 100}%` }}
-          onMouseDown={(e) => onDragStart(e, "min")}
+      <RangeTrack
+        rangeRef={rangeRef}
+        fixedValues={fixedValues}
+        min={min}
+        max={max}
+        minValue={minValue}
+        maxValue={maxValue}
+        onHandleDragStart={handleDragStart}
+      />
+
+      {enableInputs && showMaxInput && !isDragging ? (
+        <RangeInput
+          value={maxInputValue}
+          onChange={handleMaxInputChange}
+          onBlur={() => handleInputBlur("max")}
+          onKeyPress={(e) => handleKeyPress(e, "max")}
+          min={minValue + 1}
+          max={max}
+          autoFocus
         />
-        <div
-          className={styles.handle}
-          role="slider"
-          aria-valuemin={min}
-          aria-valuemax={max}
-          aria-valuenow={maxValue}
-          style={{ left: `${((maxValue - min) / (max - min)) * 100}%` }}
-          onMouseDown={(e) => onDragStart(e, "max")}
+      ) : (
+        <RangeLabel
+          value={maxValue}
+          onClick={() => enableInputs && !isDragging && setShowMaxInput(true)}
+          clickable={enableInputs}
         />
-      </div>
-      <span className={styles.label}>
-        {maxValue.toFixed(2)} <Euro size={16} />
-      </span>
+      )}
     </div>
   );
 }

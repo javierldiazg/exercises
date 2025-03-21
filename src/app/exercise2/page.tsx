@@ -24,6 +24,7 @@ export default function ExerciseTwo() {
           max={data.rangeValues[data.rangeValues.length - 1]}
           fixedValues={data.rangeValues}
           onChange={() => {}}
+          enableInputs={false}
         />
       </main>
       <footer className={styles.footer}></footer>

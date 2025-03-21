@@ -1,6 +1,6 @@
-# Marvel Characters App
+# Exercises App
 
-Este proyecto es una aplicación web desarrollada con ReactJS bajo Next.js que permite explorar una serie de ejercicios.
+Este proyecto es una aplicación web desarrollada con ReactJS bajo Next.js que permite explorar y analizar la implementación de varios ejercicios.
 
 ## Deploy en Vercel
 
@@ -18,11 +18,11 @@ La aplicación esta desplegada y se pude ver en [Exercises App](https://exercise
 
 ## Arquitectura y diseño
 
-Para una arquitectura escalable y basada en patrones de diseño modernos, se considera identificar y organizar la aplicación en módulos según los dominios (Ejercicio1, Ejercicio2...)
+Para una arquitectura escalable y basada en patrones de diseño modernos, la aplicación está organizada en módulos según los siguientes dominios: Ejercicio1, Ejercicio2...
 
 ### Estructura de Directorios
 
-Esta estructura permite que el modelo de código refleje de forma precisa conceptos de negocio (por ejercicios), cada módulo tiene su propósito claro (UI, estado, lógica de negocio).
+Esta estructura permite ver y explorar un modelo de código que refleje de forma precisa conceptos de negocio (Ejemplo por ejercicio), cada módulo tiene su propósito claro (UI, estado, lógica de negocio).
 
 ```bash
 src/
@@ -30,7 +30,7 @@ src/
 │   ├── exercise1/          # Lógica y servicios para ejercicio 1
 │   ├── exercise2/          # Lógica y servicios para ejercicio 2
 │   ├── common/             # Lógica compartida entre dominios
-├── components/             # Componentes UI
+├── components/             # Componentes transversales UI
 ├── hooks/                  # Hooks personalizados
 ├── api/                    # Integración con APIs externas
 ├── utils/                  # Utilidades generales, funciones auxiliares
@@ -41,26 +41,74 @@ src/
 
 #### Ejercicio 1 y 2
 
+- Mejor testabilidad:
+  Cada componente puede ser probado de forma aislada
+  La lógica en hooks personalizados es más fácil de probar sin necesidad de renderizar componentes UI
+
+- Mayor escalabilidad:
+  Facilita la adición de nuevas características
+  Permite reutilizar componentes en otros contextos
+  Localiza los cambios a partes específicas sin afectar todo el sistema
+
+- Separación de responsabilidades:
+  Componentes UI solo se preocupan por la presentación
+  Lógica de negocio en hooks personalizados
+  Flujo de datos claramente definido
+
+- Mantenimiento simplificado:
+  Archivos más pequeños y enfocados
+  Menos acoplamiento entre componentes
+  Más fácil de entender qué hace cada parte
+
+#### Código
+
 1. app/exercise1/page.tsx y app/exercise2/page.tsx
 
-Son las páginas donde se usará el componente <Range />.
-Cada una configurará el componente con sus respectivos valores.
+Son las páginas donde se reusará el componente transversales <Range />.
+Cada página configurará el componente con sus respectivos valores (lógica de negocio indepndiente).
 
-2. components/Range/
+2. Componentes UI:
 
-- Range.tsx: Implementación del componente.
-- Range.module.css: Estilos para el componente.
-- types.ts: Definiciones de tipos (ej. RangeProps).
-- Range.test.tsx: Pruebas unitarias e integración.
+- Range.tsx:
+  Coordina el flujo de datos entre los componentes.
+  Utiliza los hooks para manejar la lógica.
+  Compone la interfaz con los componentes más pequeños.
 
-3. hooks/useRange.ts
+- RangeInput.tsx:
+  Maneja la representación y comportamiento del campo de entrada
 
-Hook para manejar la lógica del slider.
-Maneja el estado y eventos de arrastrar.
+- RangeLabel.tsx:
+  Maneja la visualización de las etiquetas de valores
 
-3. api/mockService.ts
+- RangeTrack.tsx:
+  Contiene la pista del slider y los manipuladores
 
-Simula un servicio de datos con fetch o un objeto mockeado.
+- types.ts:
+  Definiciones de tipos.
+
+- Range.module.css:
+  Estilos para el componente.
+
+- Range.test.tsx:
+  Pruebas unitarias e integración.
+
+3. Hooks personalizados
+
+- useRange.ts
+  Hook para manejar la lógica del slider <Range />.
+  Maneja el estado y eventos de arrastrar.
+
+- useRangeInputs.ts
+  Encapsula toda la lógica relacionada con los inputs, incluyendo:
+  Estados para mostrar/ocultar inputs
+  Manejo de cambios en los inputs
+  Aplicación de nuevos valores al rango
+  Cálculo de posiciones y valores
+
+4. API/Services
+
+- mockService.ts
+  Simula un servicio de datos con fetch o un objeto mockeado.
 
 ## Instalación y ejecución
 

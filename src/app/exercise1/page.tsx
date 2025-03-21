@@ -24,6 +24,7 @@ export default function ExerciseOne() {
           max={data.max}
           fixedValues={[]}
           onChange={() => {}}
+          enableInputs={true}
         />
       </main>
       <footer className={styles.footer}></footer>
