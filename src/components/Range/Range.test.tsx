@@ -5,7 +5,7 @@ import { Range } from "./Range";
 
 // Mock the hooks
 jest.mock("../../hooks/useRange", () => ({
-  useRange: jest.fn().mockImplementation((min, max, fixedValues) => ({
+  useRange: jest.fn().mockImplementation((min, max) => ({
     minValue: min,
     maxValue: max,
     onDragStart: jest.fn(),
@@ -70,7 +70,7 @@ describe("Range Component", () => {
   });
 
   test("renders with inputs enabled", () => {
-    const { useRangeInputs } = require("../../hooks/useRangeInputs");
+    const { useRangeInputs } = jest.requireMock("../../hooks/useRangeInputs"); // Usamos requireMock para importar el hook
     useRangeInputs.mockImplementation(
       ({ min, max }: { min: number; max: number }) => ({
         showMinInput: true,
@@ -113,8 +113,8 @@ describe("Range Component", () => {
   });
 
   test("handles drag start", () => {
-    const { useRangeInputs } = require("../../hooks/useRangeInputs");
-    const { useRange } = require("../../hooks/useRange");
+    const { useRangeInputs } = jest.requireMock("../../hooks/useRangeInputs"); // Usamos requireMock para importar el hook
+    const { useRange } = jest.requireMock("../../hooks/useRange"); // Usamos requireMock para importar el hook
 
     const setIsDraggingMock = jest.fn();
     const setShowMinInputMock = jest.fn();
@@ -181,7 +181,7 @@ describe("Range Component", () => {
 
   test("calls onChange when values change", async () => {
     const onChangeMock = jest.fn();
-    const { useRange } = require("../../hooks/useRange");
+    const { useRange } = jest.requireMock("../../hooks/useRange"); // Usamos requireMock para importar el hook
 
     // Mock implementation that will trigger useEffect
     useRange.mockImplementation(() => ({

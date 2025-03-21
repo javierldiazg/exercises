@@ -1,11 +1,9 @@
-import { render, screen, waitFor, act } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { getFixedRange } from "@/api/mockService";
 import ExerciseTwo from "@/app/exercise2/page";
+import { useRangeData } from "../../hooks/useRangeData";
 
-jest.mock("../../api/mockService", () => ({
-  getFixedRange: jest.fn(),
-}));
+jest.mock("../../hooks/useRangeData");
 
 jest.mock("../../components/Header/Header", () => ({
   __esModule: true,
@@ -31,13 +29,19 @@ jest.mock("../../components/Range/Range", () => ({
   ),
 }));
 
-describe("ExerciseTwo Component", () => {
+describe("ExerciseTwo Page", () => {
+  const mockUseRangeData = useRangeData as jest.Mock;
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("displays loading state initially", () => {
-    (getFixedRange as jest.Mock).mockReturnValue(new Promise(() => {}));
+    mockUseRangeData.mockReturnValue({
+      data: null,
+      loading: true,
+      error: null,
+    });
 
     render(<ExerciseTwo />);
 
@@ -46,12 +50,13 @@ describe("ExerciseTwo Component", () => {
 
   it("renders the Range component with data after loading", async () => {
     const mockRangeValues = [10, 20, 30, 40, 50];
-    const mockData = { rangeValues: mockRangeValues };
-    (getFixedRange as jest.Mock).mockResolvedValue(mockData);
+    mockUseRangeData.mockReturnValue({
+      data: { rangeValues: mockRangeValues },
+      loading: false,
+      error: null,
+    });
 
     render(<ExerciseTwo />);
-
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
@@ -65,15 +70,17 @@ describe("ExerciseTwo Component", () => {
     );
   });
 
-  it("calls getFixedRange on component mount", async () => {
-    (getFixedRange as jest.Mock).mockResolvedValue({
-      rangeValues: [10, 20, 30],
+  it("displays error message when API fails", async () => {
+    mockUseRangeData.mockReturnValue({
+      data: null,
+      loading: false,
+      error: "Failed to fetch range",
     });
 
-    await act(async () => {
-      render(<ExerciseTwo />);
-    });
+    render(<ExerciseTwo />);
 
-    expect(getFixedRange).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(screen.getByText("Failed to fetch range")).toBeInTheDocument();
+    });
   });
 });
