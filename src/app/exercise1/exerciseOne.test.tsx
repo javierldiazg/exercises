@@ -2,8 +2,12 @@ import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ExerciseOne from "@/app/exercise1/page";
 import { useRangeData } from "../../hooks/useRangeData";
+import { getNormalRangeMock } from "@/api/mockServices";
 
 jest.mock("../../hooks/useRangeData");
+jest.mock("../../api/mockServices", () => ({
+  getNormalRangeMock: jest.fn(),
+}));
 
 jest.mock("../../components/Header/Header", () => ({
   __esModule: true,
@@ -22,6 +26,7 @@ jest.mock("../../components/Range/Range", () => ({
 
 describe("ExerciseOne Page", () => {
   const mockUseRangeData = useRangeData as jest.Mock;
+  const mockGetNormalRangeMock = getNormalRangeMock as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -32,6 +37,7 @@ describe("ExerciseOne Page", () => {
       data: null,
       loading: true,
       error: null,
+      setData: jest.fn(),
     });
 
     render(<ExerciseOne />);
@@ -45,6 +51,7 @@ describe("ExerciseOne Page", () => {
       data: mockData,
       loading: false,
       error: null,
+      setData: jest.fn(),
     });
 
     render(<ExerciseOne />);
@@ -58,17 +65,44 @@ describe("ExerciseOne Page", () => {
     expect(screen.getByTestId("max-value").textContent).toBe("100");
   });
 
-  it("displays error message when API fails", async () => {
+  it("calls getNormalRangeMock when there's an error and updates data", async () => {
+    const mockData = { min: 20, max: 200 };
+    const setDataMock = jest.fn();
+
     mockUseRangeData.mockReturnValue({
       data: null,
       loading: false,
-      error: "Failed to fetch range",
+      error: "API Error",
+      setData: setDataMock,
     });
+
+    mockGetNormalRangeMock.mockResolvedValue(mockData);
 
     render(<ExerciseOne />);
 
     await waitFor(() => {
-      expect(screen.getByText("Failed to fetch range")).toBeInTheDocument();
+      expect(mockGetNormalRangeMock).toHaveBeenCalledTimes(1);
+    });
+
+    await waitFor(() => {
+      expect(setDataMock).toHaveBeenCalledWith(mockData);
+    });
+  });
+
+  it("shows 'No range available.' if no data is present after an error", async () => {
+    mockUseRangeData.mockReturnValue({
+      data: null,
+      loading: false,
+      error: "API Error",
+      setData: jest.fn(),
+    });
+
+    mockGetNormalRangeMock.mockResolvedValue(null);
+
+    render(<ExerciseOne />);
+
+    await waitFor(() => {
+      expect(screen.getByText("No range available.")).toBeInTheDocument();
     });
   });
 });

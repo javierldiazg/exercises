@@ -41,5 +41,5 @@ export function useRangeData(type: RangeType) {
     fetchData();
   }, [type]);
 
-  return { data, loading, error };
+  return { data, loading, error, setData };
 }

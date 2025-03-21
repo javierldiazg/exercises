@@ -1,18 +1,25 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRangeData } from "@/hooks/useRangeData";
+import { getFixedRangeMock } from "@/api/mockServices";
 import Header from "@/components/Header/Header";
 import { Range } from "@/components/Range/Range";
 import styles from "./exerciseTwo.module.css";
 
 export default function ExerciseTwo() {
-  const { data, loading, error } = useRangeData("fixed");
+  const { data, loading, error, setData } = useRangeData("fixed");
+
+  useEffect(() => {
+    if (error) {
+      getFixedRangeMock().then(setData);
+    }
+  }, [error, setData]);
 
   return (
     <div className={styles.page}>
       <Header />
       <main className={styles.main}>
-        {error && <p>{error}</p>}
         {loading ? (
           <p>Loading...</p>
         ) : !data?.rangeValues ? (
