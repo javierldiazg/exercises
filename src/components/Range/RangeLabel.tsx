@@ -1,6 +1,5 @@
 import React from "react";
 import { Euro } from "lucide-react";
-import styles from "./Range.module.css";
 
 interface RangeLabelProps {
   value: number;

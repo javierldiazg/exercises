@@ -1,31 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getNormalRange } from "@/api/mockService";
+import { useRangeData } from "@/hooks/useRangeData";
 import Header from "@/components/Header/Header";
 import { Range } from "@/components/Range/Range";
 import styles from "./exerciseOne.module.css";
 
 export default function ExerciseOne() {
-  const [data, setData] = useState<{ min: number; max: number } | null>(null);
-
-  useEffect(() => {
-    getNormalRange().then(setData);
-  }, []);
-
-  if (!data) return <p>Loading...</p>;
+  const { data, loading, error } = useRangeData("normal");
 
   return (
     <div className={styles.page}>
       <Header />
       <main className={styles.main}>
-        <Range
-          min={data.min}
-          max={data.max}
-          fixedValues={[]}
-          onChange={() => {}}
-          enableInputs={true}
-        />
+        {error && <p>{error}</p>}
+        {loading ? (
+          <p>Loading...</p>
+        ) : !data ? (
+          <p>No range available.</p>
+        ) : (
+          <Range
+            min={data.min!}
+            max={data.max!}
+            fixedValues={[]}
+            onChange={() => {}}
+            enableInputs={true}
+          />
+        )}
       </main>
       <footer className={styles.footer}></footer>
     </div>
