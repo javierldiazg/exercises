@@ -1,5 +1,6 @@
 import React from "react";
 import { Euro } from "lucide-react";
+import styles from "./Range.module.css";
 
 interface RangeLabelProps {
   value: number;
@@ -10,10 +11,10 @@ interface RangeLabelProps {
 export const RangeLabel = ({ value, onClick, clickable }: RangeLabelProps) => {
   return (
     <div
-      className={`label ${clickable ? "clickable" : ""}`}
+      className={`${styles.label} ${clickable ? "clickable" : ""}`}
       onClick={clickable ? onClick : undefined}
     >
-      {value.toFixed(2)} <Euro data-testid="euro-icon" />
+      {value.toFixed(2)} <Euro data-testid="euro-icon" size={16} />
     </div>
   );
 };
