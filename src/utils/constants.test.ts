@@ -13,10 +13,16 @@ describe("Constants - PAGES", () => {
         href: "/exercise2",
         description: "Range component with fixed values.",
       },
+      {
+        title: "Exercise Three",
+        href: "/exercise3",
+        description:
+          "Range component with min and max values (0 to 100). Mobile friendly.",
+      },
     ]);
   });
 
   it("has the correct number of pages", () => {
-    expect(PAGES.length).toBe(2);
+    expect(PAGES.length).toBe(3);
   });
 });
