@@ -2,10 +2,6 @@
 
 Este proyecto es una aplicación web desarrollada con ReactJS bajo Next.js que permite explorar y analizar la implementación de varios ejercicios.
 
-## Deploy en Vercel
-
-La aplicación esta desplegada y se pude ver en [Exercises App](https://exercises-eight-tan.vercel.app/)
-
 ## Tecnologías utilizadas
 
 - React: Librería para construir la interfaz de usuario.
@@ -64,6 +60,10 @@ src/
 - Archivos más pequeños y enfocados.
 - Menos acoplamiento entre componentes.
 - Más fácil de entender qué hace cada parte.
+
+#### Ejercicio 3
+
+Es una versión mejorada del ejercicio 1. Mejora la adaptabilidad funcional y de experiencia para mobile.
 
 #### Código
 
@@ -164,3 +164,7 @@ Ejecutar tests:
 ```bash
 npm test
 ```
+
+## Deploy en Vercel
+
+La aplicación esta desplegada y se pude ver en [Exercises App](https://exercises-eight-tan.vercel.app/)

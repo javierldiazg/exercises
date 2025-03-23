@@ -26,7 +26,7 @@ export function RangeFull({
   const [showMaxInput, setShowMaxInput] = useState(false);
   const [minInputValue, setMinInputValue] = useState(minValue.toFixed(2));
   const [maxInputValue, setMaxInputValue] = useState(maxValue.toFixed(2));
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging] = useState(false);
 
   useEffect(() => {
     setMinInputValue(minValue.toFixed(2));
@@ -37,18 +37,21 @@ export function RangeFull({
     onChange({ minValue, maxValue });
   }, [minValue, maxValue, onChange]);
 
-  const handleDragStart = (e: React.MouseEvent, type: "min" | "max") => {
-    setIsDragging(true);
-    setShowMinInput(false);
-    setShowMaxInput(false);
+  const handleBlur = (type: "min" | "max") => {
+    if (type === "min") {
+      setMinValue(parseFloat(minInputValue) || min);
+      setShowMinInput(false);
+    } else {
+      setMaxValue(parseFloat(maxInputValue) || max);
+      setShowMaxInput(false);
+    }
+  };
 
-    const onMouseUp = () => {
-      setIsDragging(false);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-
-    document.addEventListener("mouseup", onMouseUp);
-    onDragStart(e, type);
+  const handleKeyDown = (e: React.KeyboardEvent, type: "min" | "max") => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleBlur(type);
+    }
   };
 
   return (
@@ -59,8 +62,10 @@ export function RangeFull({
             type="number"
             value={minInputValue}
             onChange={(e) => setMinInputValue(e.target.value)}
-            onBlur={() => setMinValue(parseFloat(minInputValue))}
+            onBlur={() => handleBlur("min")}
+            onKeyDown={(e) => handleKeyDown(e, "min")}
             className={styles.valueInput}
+            autoFocus
           />
         ) : (
           <span
@@ -82,7 +87,8 @@ export function RangeFull({
           aria-valuemax={max}
           aria-valuenow={minValue}
           style={{ left: `${((minValue - min) / (max - min)) * 100}%` }}
-          onMouseDown={(e) => handleDragStart(e, "min")}
+          onMouseDown={(e) => onDragStart(e, "min")}
+          onTouchStart={(e) => onDragStart(e, "min")}
         />
         <div
           className={styles.handle}
@@ -91,7 +97,8 @@ export function RangeFull({
           aria-valuemax={max}
           aria-valuenow={maxValue}
           style={{ left: `${((maxValue - min) / (max - min)) * 100}%` }}
-          onMouseDown={(e) => handleDragStart(e, "max")}
+          onMouseDown={(e) => onDragStart(e, "max")}
+          onTouchStart={(e) => onDragStart(e, "max")}
         />
       </div>
 
@@ -101,8 +108,10 @@ export function RangeFull({
             type="number"
             value={maxInputValue}
             onChange={(e) => setMaxInputValue(e.target.value)}
-            onBlur={() => setMaxValue(parseFloat(maxInputValue))}
+            onBlur={() => handleBlur("max")}
+            onKeyDown={(e) => handleKeyDown(e, "max")}
             className={styles.valueInput}
+            autoFocus
           />
         ) : (
           <span

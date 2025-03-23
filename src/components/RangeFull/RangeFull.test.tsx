@@ -53,4 +53,84 @@ describe("RangeFull Component", () => {
 
     expect(mockOnChange).toHaveBeenCalled();
   });
+
+  it("allows editing min and max values via input fields", () => {
+    render(
+      <RangeFull
+        min={1}
+        max={100}
+        enableInputs={true}
+        onChange={mockOnChange}
+      />
+    );
+
+    const minLabel = screen.getByText("1.00");
+    fireEvent.click(minLabel);
+
+    const minInput = screen.getByRole("spinbutton");
+    fireEvent.change(minInput, { target: { value: "20.00" } });
+    fireEvent.blur(minInput);
+
+    expect(mockOnChange).toHaveBeenCalledWith({ minValue: 20, maxValue: 100 });
+  });
+
+  it("ensures maxValue does not go below minValue", () => {
+    render(
+      <RangeFull
+        min={1}
+        max={100}
+        enableInputs={true}
+        onChange={mockOnChange}
+      />
+    );
+
+    const maxLabel = screen.getByText("100.00");
+    fireEvent.click(maxLabel);
+
+    const maxInput = screen.getByRole("spinbutton");
+    fireEvent.change(maxInput, { target: { value: "1.00" } });
+    fireEvent.blur(maxInput);
+
+    expect(mockOnChange).toHaveBeenCalledWith({ minValue: 1, maxValue: 1 });
+  });
+
+  it("restores min value if input is cleared", () => {
+    render(
+      <RangeFull
+        min={1}
+        max={100}
+        enableInputs={true}
+        onChange={mockOnChange}
+      />
+    );
+
+    const minLabel = screen.getByText("1.00");
+    fireEvent.click(minLabel);
+
+    const minInput = screen.getByRole("spinbutton");
+    fireEvent.change(minInput, { target: { value: "" } });
+    fireEvent.blur(minInput);
+
+    expect(mockOnChange).toHaveBeenCalledWith({ minValue: 1, maxValue: 100 });
+  });
+
+  it("updates min value on Enter key press", () => {
+    render(
+      <RangeFull
+        min={1}
+        max={100}
+        enableInputs={true}
+        onChange={mockOnChange}
+      />
+    );
+
+    const minLabel = screen.getByText("1.00");
+    fireEvent.click(minLabel);
+
+    const minInput = screen.getByRole("spinbutton");
+    fireEvent.change(minInput, { target: { value: "30.00" } });
+    fireEvent.keyDown(minInput, { key: "Enter" });
+
+    expect(mockOnChange).toHaveBeenCalledWith({ minValue: 30, maxValue: 100 });
+  });
 });
